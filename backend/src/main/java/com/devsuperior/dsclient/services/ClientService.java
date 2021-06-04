@@ -9,6 +9,8 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,13 @@ public class ClientService {
 		List <Client>  list = repository.findAll();
 		List <ClientDTO> listDTO = list.stream().map( x -> new ClientDTO(x)).collect(Collectors.toList());
 		return listDTO;
+	}
+
+	@Transactional( readOnly = true)
+	public Page<ClientDTO> findAllPaged(PageRequest pagerequest){
+		Page<Client>  list = repository.findAll(pagerequest);
+		return list.map( x -> new ClientDTO(x));
+		
 	}
 	@Transactional( readOnly = true)
 	public ClientDTO findById(Long id) {
